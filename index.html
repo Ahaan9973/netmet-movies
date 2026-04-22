@@ -22,7 +22,7 @@
   2. TMDB API KEY:
      - Get free key at https://developer.themoviedb.org
      - Replace YOUR_TMDB_API_KEY below
-       60051cd973cd332a2956d0b45dcbe058
+
   3. AFFILIATE LINKS (bonus income):
      - Amazon Prime: https://affiliate-program.amazon.in
      - Hotstar: Contact their affiliate team
@@ -879,7 +879,7 @@ footer {
 //  NETMET MOVIES — CORE ENGINE
 //  Add your TMDB API key below (free at developer.themoviedb.org)
 // ═══════════════════════════════════════════
-const TMDB_KEY = 'YOUR_TMDB_API_KEY_HERE';
+const TMDB_KEY = '60051cd973cd332a2956d0b45dcbe058';
 const BASE = 'https://api.themoviedb.org/3';
 const IMG = 'https://image.tmdb.org/t/p/';
 
@@ -906,7 +906,7 @@ const getYear = i => {
 const getType = i => i.media_type || (i.first_air_date ? 'tv' : 'movie');
 
 async function tmdb(ep, p = {}) {
-  if (TMDB_KEY === 'YOUR_TMDB_API_KEY_HERE') return null;
+  if (TMDB_KEY === '60051cd973cd332a2956d0b45dcbe058') return null;
   p.api_key = TMDB_KEY; p.language = 'en-US';
   try {
     const r = await fetch(`${BASE}${ep}?${new URLSearchParams(p)}`);
@@ -1152,7 +1152,7 @@ function scrollToDiscover() {
 function demoMode() {
   const fake = Array(10).fill(0).map((_,i)=>({
     id:i, title:['Add TMDB API Key','Get Key Free at TMDB','Browse 1M+ Titles','Discover Trending','Filter by Genre','Search Instantly','HD Posters','Cast & Crew','Ratings & Reviews','Mobile Friendly'][i],
-    poster_path:null, vote_average:8.5+i*0.05, release_date:'2024-01-01', overview:'Get your free TMDB API key at developer.themoviedb.org and replace YOUR_TMDB_API_KEY_HERE in the script tag.'
+    poster_path:null, vote_average:8.5+i*0.05, release_date:'2024-01-01', overview:'Get your free TMDB API key at developer.themoviedb.org and replace 60051cd973cd332a2956d0b45dcbe058 in the script tag.'
   }));
   state.heroItems = fake;
   $id('hero-title').textContent = 'Welcome to NETMET Movies';
@@ -1166,7 +1166,7 @@ function demoMode() {
 
 // ── INIT ──
 (function init() {
-  if (TMDB_KEY === 'YOUR_TMDB_API_KEY_HERE') { demoMode(); return; }
+  if (TMDB_KEY === '60051cd973cd332a2956d0b45dcbe058') { demoMode(); return; }
   loadTrending();
   loadDiscover(1);
 })();
