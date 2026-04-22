@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NETMET Movies — Watch What's Trending</title>
+<meta name="description" content="Discover trending movies and TV shows. Browse by genre, rating, and year. Your ultimate movie discovery platform.">
+<meta name="keywords" content="movies, tv shows, trending, watch, cinema, streaming guide">
+<meta property="og:title" content="NETMET Movies">
+<meta property="og:description" content="Discover trending movies and TV shows for free.">
+<meta property="og:type" content="website">
+
+<!-- ============================================================
+  MONETISATION SETUP GUIDE
+  ============================================================
+  1. GOOGLE ADSENSE:
+     - Sign up at https://adsense.google.com
+     - Replace YOUR_ADSENSE_PUBLISHER_ID with your pub-XXXXXXXXXXXXXXXX
+     - Replace each data-ad-slot="XXXXXXXXXX" with your real slot IDs
+     - AdSense will auto-fill the ad containers once approved
+
+  2. TMDB API KEY:
+     - Get free key at https://developer.themoviedb.org
+     - Replace YOUR_TMDB_API_KEY below
+
+  3. AFFILIATE LINKS (bonus income):
+     - Amazon Prime: https://affiliate-program.amazon.in
+     - Hotstar: Contact their affiliate team
+     - Replace the affiliate href links in the footer section
+  ============================================================ -->
+
+<!-- Google AdSense Script (replace with your publisher ID) -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_ADSENSE_PUBLISHER_ID" crossorigin="anonymous"></script> -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --black: #000000;
+  --dark: #0a0a0a;
+  --dark2: #141414;
+  --dark3: #1a1a1a;
+  --red: #e50914;
+  --red-dark: #b20710;
+  --red-glow: rgba(229,9,20,0.15);
+  --text: #ffffff;
+  --text-dim: #a3a3a3;
+  --text-muted: #555;
+  --card-w: 190px;
+  --border: rgba(255,255,255,0.07);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'Montserrat', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--dark); }
+::-webkit-scrollbar-thumb { background: var(--red-dark); border-radius: 2px; }
+
+/* ── NAV ── */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 68px;
+  display: flex; align-items: center;
+  padding: 0 4%;
+  gap: 2rem;
+  transition: background 0.4s;
+}
+#navbar.scrolled {
+  background: rgba(0,0,0,0.97);
+  border-bottom: 1px solid rgba(229,9,20,0.12);
+  backdrop-filter: blur(10px);
+}
+#navbar:not(.scrolled) {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.85), transparent);
+}
+
+.logo-wrap {
+  display: flex; align-items: center; gap: 0; text-decoration: none;
+  flex-shrink: 0;
+}
+/* N icon mimicking the style from the reference image */
+.logo-n {
+  width: 28px; height: 42px;
+  background: var(--red);
+  clip-path: polygon(0 0, 30% 0, 100% 100%, 70% 100%, 0 100%, 0 0, 30% 0, 72% 68%, 72% 100%, 100% 100%, 100% 0, 68% 0, 28% 70%, 28% 0);
+  position: relative;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+.logo-text {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 1.55rem;
+  color: var(--red);
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+}
+.logo-sub {
+  font-size: 0.52rem; font-weight: 600; letter-spacing: 3px;
+  color: var(--text-muted); text-transform: uppercase;
+  margin-left: 0.4rem; align-self: flex-end; padding-bottom: 4px;
+}
+
+.nav-links {
+  display: flex; gap: 1.4rem; list-style: none;
+}
+.nav-links a {
+  color: var(--text-dim); font-size: 0.78rem; font-weight: 600;
+  text-decoration: none; letter-spacing: 0.5px; text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--text); }
+
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+
+.search-box {
+  position: relative;
+  display: flex; align-items: center;
+}
+.search-box input {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  padding: 0.45rem 1rem 0.45rem 2.4rem;
+  color: var(--text); font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem; outline: none; width: 220px;
+  transition: all 0.3s;
+}
+.search-box input:focus {
+  border-color: rgba(229,9,20,0.5);
+  background: rgba(255,255,255,0.1);
+  width: 280px;
+}
+.search-box input::placeholder { color: var(--text-muted); }
+.search-icon {
+  position: absolute; left: 0.7rem;
+  color: var(--text-muted); font-size: 0.82rem;
+  pointer-events: none;
+}
+
+/* ── AD BANNER TOP ── */
+.ad-banner-top {
+  margin-top: 68px;
+  background: var(--dark2);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  min-height: 90px; padding: 0.5rem;
+  overflow: hidden;
+}
+.ad-label {
+  font-size: 0.6rem; color: var(--text-muted);
+  letter-spacing: 2px; text-transform: uppercase;
+  text-align: center; display: block; margin-bottom: 4px;
+}
+/* AdSense slot placeholder styling */
+.ad-slot {
+  display: block;
+  background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+  border: 1px dashed rgba(229,9,20,0.2);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted); font-size: 0.72rem; letter-spacing: 1px;
+  text-align: center; font-family: 'Montserrat', sans-serif;
+}
+.ad-slot-728 { width: 728px; height: 90px; max-width: 100%; }
+.ad-slot-300 { width: 300px; height: 250px; }
+.ad-slot-320 { width: 320px; height: 50px; max-width: 100%; }
+
+/* ── HERO ── */
+#hero {
+  position: relative;
+  height: 88vh; min-height: 520px;
+  display: flex; align-items: flex-end;
+  overflow: hidden;
+}
+#hero-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center 20%;
+  transition: background-image 0.8s ease;
+}
+#hero-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(to right, rgba(0,0,0,0.88) 35%, rgba(0,0,0,0.1) 100%),
+    linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 45%),
+    linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 20%);
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  padding: 0 4% 5%;
+  max-width: 550px;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--red); color: white;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  padding: 0.3rem 0.8rem; border-radius: 2px;
+  margin-bottom: 1.2rem;
+  animation: fadeUp 0.5s 0.1s ease both;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 4.5vw, 3.8rem);
+  font-weight: 900; line-height: 1.05;
+  letter-spacing: -1px;
+  margin-bottom: 1rem;
+  animation: fadeUp 0.5s 0.2s ease both;
+  text-shadow: 2px 4px 20px rgba(0,0,0,0.8);
+}
+
+.hero-meta {
+  display: flex; gap: 1rem; align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.8rem; color: var(--text-dim);
+  animation: fadeUp 0.5s 0.3s ease both;
+}
+.hero-rating { color: #f5c518; font-weight: 700; }
+.hero-match { color: #46d369; font-weight: 700; }
+
+.hero-desc {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.05rem; line-height: 1.75;
+  color: rgba(255,255,255,0.75);
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.5s 0.35s ease both;
+}
+
+.hero-actions {
+  display: flex; gap: 0.8rem;
+  animation: fadeUp 0.5s 0.4s ease both;
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--red); color: white;
+  border: none; cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem; font-weight: 700; letter-spacing: 0.5px;
+  padding: 0.75rem 1.8rem; border-radius: 4px;
+  transition: all 0.2s; text-decoration: none;
+}
+.btn-primary:hover { background: #f40612; transform: scale(1.03); }
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(109,109,110,0.7); color: white;
+  border: none; cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem; font-weight: 700;
+  padding: 0.75rem 1.8rem; border-radius: 4px;
+  transition: all 0.2s; text-decoration: none;
+  backdrop-filter: blur(4px);
+}
+.btn-secondary:hover { background: rgba(109,109,110,0.9); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero dots */
+.hero-dots {
+  position: absolute; bottom: 2rem; right: 4%;
+  display: flex; gap: 0.4rem; z-index: 3;
+}
+.hero-dot {
+  width: 24px; height: 3px; border-radius: 2px;
+  background: rgba(255,255,255,0.3); cursor: pointer;
+  transition: all 0.3s;
+}
+.hero-dot.active { background: var(--red); width: 36px; }
+
+/* ── GENRE STRIP ── */
+.genre-strip {
+  background: var(--dark2);
+  border-bottom: 1px solid var(--border);
+  padding: 0.8rem 4%;
+  display: flex; gap: 0.5rem; overflow-x: auto;
+  scrollbar-width: none;
+}
+.genre-strip::-webkit-scrollbar { display: none; }
+
+.genre-pill {
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--text-dim); border-radius: 20px;
+  padding: 0.35rem 1rem; font-family: 'Montserrat', sans-serif;
+  font-size: 0.73rem; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.genre-pill:hover { border-color: rgba(229,9,20,0.5); color: white; }
+.genre-pill.active {
+  background: var(--red); border-color: var(--red); color: white;
+}
+
+/* ── SECTIONS ── */
+.content-wrap { padding: 0 4%; }
+
+.section { margin-bottom: 2.5rem; }
+.section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-size: 1.2rem; font-weight: 700; letter-spacing: -0.3px;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.section-title::before {
+  content: '';
+  display: block; width: 4px; height: 20px;
+  background: var(--red); border-radius: 2px;
+}
+.section-more {
+  font-size: 0.72rem; color: var(--text-muted); letter-spacing: 1px;
+  text-transform: uppercase; cursor: pointer;
+  transition: color 0.2s; border: none; background: none;
+  font-family: 'Montserrat', sans-serif;
+}
+.section-more:hover { color: var(--red); }
+
+/* ── ROW SCROLL ── */
+.cards-row {
+  display: flex; gap: 0.6rem; overflow-x: auto;
+  padding-bottom: 0.5rem; scrollbar-width: none;
+  position: relative;
+}
+.cards-row::-webkit-scrollbar { display: none; }
+.cards-row .movie-card { flex: 0 0 var(--card-w); }
+
+/* ── GRID ── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr));
+  gap: 0.6rem;
+}
+
+/* ── CARD ── */
+.movie-card {
+  position: relative; cursor: pointer;
+  border-radius: 4px; overflow: hidden;
+  background: var(--dark3);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: cardReveal 0.4s ease both;
+}
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.movie-card:hover {
+  transform: scale(1.06) translateY(-5px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.8), 0 0 0 1px rgba(229,9,20,0.2);
+  z-index: 10;
+}
+
+.card-img {
+  width: 100%; aspect-ratio: 2/3;
+  object-fit: cover; display: block;
+  background: var(--dark3);
+}
+
+.card-hover {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+  opacity: 0; transition: opacity 0.25s;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0.75rem;
+}
+.movie-card:hover .card-hover { opacity: 1; }
+
+.card-info-title {
+  font-size: 0.77rem; font-weight: 700; line-height: 1.3;
+  margin-bottom: 0.3rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.card-info-row {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.card-year { font-size: 0.68rem; color: var(--text-dim); }
+.card-score {
+  font-size: 0.7rem; font-weight: 700; color: #f5c518;
+  display: flex; align-items: center; gap: 0.2rem;
+}
+
+/* card label below */
+.card-label {
+  padding: 0.45rem 0.5rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.card-label-title {
+  font-size: 0.73rem; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: rgba(255,255,255,0.85);
+}
+.card-label-meta {
+  font-size: 0.65rem; color: var(--text-muted);
+  display: flex; justify-content: space-between; margin-top: 0.2rem;
+}
+
+/* TOP 10 BADGE */
+.top-badge {
+  position: absolute; top: 0.4rem; left: 0.4rem;
+  background: var(--red); color: white;
+  font-size: 0.6rem; font-weight: 900; letter-spacing: 1px;
+  padding: 0.15rem 0.4rem; border-radius: 2px; z-index: 2;
+}
+
+/* ── SKELETON ── */
+.skel {
+  background: linear-gradient(90deg, #1a1a1a 25%, #252525 50%, #1a1a1a 75%);
+  background-size: 200% 100%;
+  animation: skel-anim 1.5s infinite;
+  border-radius: 4px;
+}
+@keyframes skel-anim { to { background-position: -200% 0; } }
+.skel-card { aspect-ratio: 2/3; }
+
+/* ── AD BETWEEN SECTIONS ── */
+.ad-mid {
+  margin: 1.5rem 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+
+/* ── TABS (Movies / TV) ── */
+.content-tabs {
+  display: flex; gap: 0; border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.content-tab {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Montserrat', sans-serif; font-size: 0.82rem; font-weight: 700;
+  color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;
+  padding: 0.9rem 1.5rem; position: relative;
+  transition: color 0.2s;
+}
+.content-tab::after {
+  content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px;
+  background: var(--red); transform: scaleX(0); transition: transform 0.25s;
+}
+.content-tab.active { color: white; }
+.content-tab.active::after { transform: scaleX(1); }
+
+/* ── SEARCH RESULTS ── */
+#search-section { display: none; }
+#search-section.show { display: block; }
+#browse-section { transition: opacity 0.3s; }
+
+/* ── PAGINATION ── */
+.pager {
+  display: flex; justify-content: center; gap: 0.4rem;
+  padding: 2.5rem 0 1rem; flex-wrap: wrap;
+}
+.pager-btn {
+  background: var(--dark3); border: 1px solid var(--border);
+  color: var(--text-dim); padding: 0.5rem 0.9rem; border-radius: 4px;
+  cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.78rem; font-weight: 600;
+  transition: all 0.2s;
+}
+.pager-btn:hover { border-color: var(--red); color: white; }
+.pager-btn.active { background: var(--red); border-color: var(--red); color: white; }
+.pager-btn:disabled { opacity: 0.25; pointer-events: none; }
+
+/* ── MODAL ── */
+#overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.88);
+  backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+#overlay.open { display: flex; }
+
+#modal {
+  background: var(--dark2);
+  border-radius: 8px; overflow: hidden;
+  max-width: 800px; width: 100%;
+  max-height: 92vh; overflow-y: auto;
+  position: relative;
+  border: 1px solid rgba(229,9,20,0.15);
+  animation: modalPop 0.3s ease;
+}
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.94) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-backdrop-wrap { position: relative; }
+#modal-back {
+  width: 100%; height: 300px;
+  object-fit: cover; object-position: center 20%;
+  display: block;
+}
+.modal-gradient {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, var(--dark2) 100%);
+}
+#modal-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.1);
+  color: white; width: 38px; height: 38px; border-radius: 50%;
+  cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s; z-index: 2;
+}
+#modal-close:hover { background: var(--red); border-color: var(--red); }
+
+.modal-body { padding: 0 2rem 2rem; }
+
+#modal-title {
+  font-size: clamp(1.5rem, 4vw, 2.4rem);
+  font-weight: 900; letter-spacing: -0.5px; line-height: 1.1;
+  margin-bottom: 0.6rem;
+}
+.modal-meta-row {
+  display: flex; gap: 0.7rem; flex-wrap: wrap; align-items: center;
+  margin-bottom: 1rem; font-size: 0.78rem; color: var(--text-dim);
+}
+.m-pill {
+  background: var(--dark3); padding: 0.2rem 0.6rem;
+  border-radius: 3px; font-size: 0.7rem; font-weight: 600;
+}
+.m-rating { color: #f5c518; font-weight: 700; font-size: 0.92rem; }
+.m-match { color: #46d369; font-weight: 700; }
+
+.modal-genres {
+  display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.2rem;
+}
+.m-genre {
+  border: 1px solid rgba(229,9,20,0.3); color: rgba(229,9,20,0.9);
+  font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.7rem; border-radius: 20px;
+}
+
+#modal-overview {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1rem; line-height: 1.8;
+  color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;
+}
+
+.cast-title {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 2px;
+  color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.8rem;
+}
+.cast-scroll {
+  display: flex; gap: 0.7rem; overflow-x: auto;
+  padding-bottom: 0.5rem; scrollbar-width: none;
+}
+.cast-scroll::-webkit-scrollbar { display: none; }
+.cast-item { flex: 0 0 72px; text-align: center; }
+.cast-pic {
+  width: 60px; height: 60px; border-radius: 50%;
+  object-fit: cover; background: var(--dark3);
+  display: block; margin: 0 auto 0.35rem;
+  border: 2px solid rgba(229,9,20,0.2);
+}
+.cast-name { font-size: 0.62rem; color: var(--text-dim); line-height: 1.3; }
+
+/* Modal ad slot */
+.modal-ad {
+  margin: 1.5rem 0;
+  display: flex; flex-direction: column; align-items: center;
+}
+
+.tmdb-ref {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  color: var(--text-muted); font-size: 0.75rem; text-decoration: none;
+  padding: 0.4rem 1rem; border: 1px solid var(--border); border-radius: 4px;
+  transition: all 0.2s; margin-top: 1rem;
+}
+.tmdb-ref:hover { color: white; border-color: rgba(229,9,20,0.4); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--dark2);
+  border-top: 1px solid var(--border);
+  padding: 3rem 4% 2rem;
+  margin-top: 3rem;
+}
+.footer-top {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem;
+  margin-bottom: 2rem;
+}
+.footer-col-title {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.9rem;
+}
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 0.5rem; }
+.footer-links a {
+  color: var(--text-muted); font-size: 0.8rem; text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--red); }
+
+/* Affiliate links — clearly labelled */
+.affiliate-label {
+  font-size: 0.6rem; letter-spacing: 1px; color: var(--text-muted);
+  text-transform: uppercase; margin-bottom: 0.5rem; display: block;
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 0.5rem;
+}
+.footer-copy { font-size: 0.72rem; color: var(--text-muted); }
+.footer-tmdb {
+  font-size: 0.68rem; color: var(--text-muted);
+}
+.footer-tmdb a { color: #01b4e4; text-decoration: none; }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: 2rem; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--dark3); border: 1px solid rgba(229,9,20,0.3);
+  color: white; padding: 0.65rem 1.5rem; border-radius: 5px;
+  font-size: 0.8rem; opacity: 0; transition: all 0.3s;
+  pointer-events: none; z-index: 9000; white-space: nowrap;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  :root { --card-w: 140px; }
+  .nav-links { display: none; }
+  .search-box input { width: 160px; }
+  .search-box input:focus { width: 200px; }
+  .hero-content { padding: 0 5% 5%; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .content-wrap { padding: 0 3%; }
+  .modal-body { padding: 0 1.2rem 1.5rem; }
+}
+@media (max-width: 480px) {
+  :root { --card-w: 120px; }
+  .footer-top { grid-template-columns: 1fr; }
+  .hero-title { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     LEADERBOARD AD - TOP (728x90)
+     Replace with your Google AdSense code
+════════════════════════════════════════ -->
+<div class="ad-banner-top">
+  <span class="ad-label">Advertisement</span>
+  <!-- ADSENSE SLOT: Replace below with your actual ad unit code -->
+  <!--
+  <ins class="adsbygoogle ad-slot-728"
+       style="display:inline-block;width:728px;height:90px"
+       data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+       data-ad-slot="YOUR_LEADERBOARD_SLOT_ID"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <div class="ad-slot ad-slot-728">AdSense 728×90 — Add your publisher ID above</div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="logo-wrap">
+    <div class="logo-n"></div>
+    <span class="logo-text">etmet</span>
+    <span class="logo-sub">Movies</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#" class="active" data-tab="movies" onclick="switchTab('movies',this);return false;">Movies</a></li>
+    <li><a href="#" data-tab="tv" onclick="switchTab('tv',this);return false;">TV Shows</a></li>
+    <li><a href="#" onclick="scrollToDiscover();return false;">Discover</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="search-box">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="search-input" placeholder="Search titles…" autocomplete="off">
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div id="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge" id="hero-badge">🔥 Trending Now</div>
+    <div class="hero-title" id="hero-title">Loading…</div>
+    <div class="hero-meta" id="hero-meta"></div>
+    <div class="hero-desc" id="hero-desc"></div>
+    <div class="hero-actions">
+      <button class="btn-primary" id="hero-more">ℹ More Info</button>
+      <button class="btn-secondary" id="hero-next" onclick="nextHero()">▶ Next</button>
+    </div>
+  </div>
+  <div class="hero-dots" id="hero-dots"></div>
+</section>
+
+<!-- GENRE STRIP -->
+<div class="genre-strip" id="genre-strip">
+  <button class="genre-pill active" data-genre="">🎬 All</button>
+  <button class="genre-pill" data-genre="28">💥 Action</button>
+  <button class="genre-pill" data-genre="35">😂 Comedy</button>
+  <button class="genre-pill" data-genre="18">🎭 Drama</button>
+  <button class="genre-pill" data-genre="27">👻 Horror</button>
+  <button class="genre-pill" data-genre="878">🚀 Sci-Fi</button>
+  <button class="genre-pill" data-genre="10749">💕 Romance</button>
+  <button class="genre-pill" data-genre="16">✨ Animation</button>
+  <button class="genre-pill" data-genre="53">🔪 Thriller</button>
+  <button class="genre-pill" data-genre="12">🗺 Adventure</button>
+  <button class="genre-pill" data-genre="80">🕵 Crime</button>
+  <button class="genre-pill" data-genre="99">📽 Documentary</button>
+</div>
+
+<!-- MAIN -->
+<div class="content-wrap" id="main-wrap">
+
+  <!-- SEARCH RESULTS -->
+  <section id="search-section">
+    <div class="section" style="padding-top:1.5rem">
+      <div class="section-head">
+        <div class="section-title">Search Results</div>
+        <span id="search-count" style="font-size:0.75rem;color:var(--text-muted)"></span>
+      </div>
+      <div class="cards-grid" id="search-grid"></div>
+    </div>
+  </section>
+
+  <!-- BROWSE CONTENT -->
+  <section id="browse-section">
+    <!-- TRENDING ROW -->
+    <div class="section" style="padding-top:1.5rem">
+      <div class="section-head">
+        <div class="section-title">Trending This Week</div>
+      </div>
+      <div class="cards-row" id="trending-row"></div>
+    </div>
+
+    <!-- ═══ MID AD SLOT (300x250 Rectangle) ═══ -->
+    <div class="ad-mid">
+      <span class="ad-label">Advertisement</span>
+      <!--
+      <ins class="adsbygoogle ad-slot-300"
+           style="display:inline-block;width:300px;height:250px"
+           data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+           data-ad-slot="YOUR_RECTANGLE_SLOT_ID"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      -->
+      <div class="ad-slot ad-slot-300">AdSense 300×250 — Medium Rectangle</div>
+    </div>
+
+    <!-- TABS + DISCOVER GRID -->
+    <div id="discover-anchor"></div>
+    <div class="content-tabs">
+      <button class="content-tab active" id="tab-movies" onclick="switchTab('movies')">🎬 Movies</button>
+      <button class="content-tab" id="tab-tv" onclick="switchTab('tv')">📺 TV Shows</button>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title" id="discover-title">Popular Movies</div>
+      </div>
+      <div class="cards-grid" id="discover-grid"></div>
+      <div class="pager" id="pager"></div>
+    </div>
+
+    <!-- ═══ BOTTOM LEADERBOARD AD ═══ -->
+    <div class="ad-mid">
+      <span class="ad-label">Advertisement</span>
+      <!--
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+           data-ad-slot="YOUR_BOTTOM_SLOT_ID"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      -->
+      <div class="ad-slot ad-slot-728">AdSense Responsive — Bottom Banner</div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-col-title">NETMET Movies</div>
+      <p style="font-size:0.78rem;color:var(--text-muted);line-height:1.7;max-width:220px">
+        Your go-to destination for discovering the best movies and TV shows. Powered by TMDB data.
+      </p>
+    </div>
+    <div>
+      <div class="footer-col-title">Browse</div>
+      <ul class="footer-links">
+        <li><a href="#" onclick="switchTab('movies');return false;">Movies</a></li>
+        <li><a href="#" onclick="switchTab('tv');return false;">TV Shows</a></li>
+        <li><a href="#" onclick="setGenre('28');return false;">Action</a></li>
+        <li><a href="#" onclick="setGenre('27');return false;">Horror</a></li>
+        <li><a href="#" onclick="setGenre('878');return false;">Sci-Fi</a></li>
+      </ul>
+    </div>
+    <div>
+      <!-- AFFILIATE LINKS — label them honestly for AdSense compliance -->
+      <div class="footer-col-title">Watch Legally</div>
+      <span class="affiliate-label">* Affiliate links — we may earn a commission</span>
+      <ul class="footer-links">
+        <li><a href="https://www.primevideo.com/?tag=YOUR_AMAZON_AFFILIATE_TAG" target="_blank" rel="noopener">Amazon Prime Video *</a></li>
+        <li><a href="https://www.netflix.com" target="_blank" rel="noopener">Netflix</a></li>
+        <li><a href="https://www.hotstar.com" target="_blank" rel="noopener">Disney+ Hotstar</a></li>
+        <li><a href="https://www.sonyliv.com" target="_blank" rel="noopener">Sony LIV</a></li>
+        <li><a href="https://www.zee5.com" target="_blank" rel="noopener">ZEE5</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 NETMET Movies. All rights reserved.</div>
+    <div class="footer-tmdb">
+      Movie data from <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a>.
+      This product uses the TMDB API but is not endorsed or certified by TMDB.
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div id="overlay">
+  <div id="modal">
+    <button id="modal-close">✕</button>
+    <div class="modal-backdrop-wrap">
+      <img id="modal-back" src="" alt="">
+      <div class="modal-gradient"></div>
+    </div>
+    <div class="modal-body">
+      <div id="modal-title"></div>
+      <div class="modal-meta-row" id="modal-meta"></div>
+      <div class="modal-genres" id="modal-genres"></div>
+      <div id="modal-overview"></div>
+
+      <!-- ═══ MODAL AD (In-content) ═══ -->
+      <div class="modal-ad">
+        <span class="ad-label">Advertisement</span>
+        <!--
+        <ins class="adsbygoogle ad-slot-300"
+             style="display:inline-block;width:300px;height:250px"
+             data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+             data-ad-slot="YOUR_MODAL_SLOT_ID"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        -->
+        <div class="ad-slot ad-slot-300">AdSense 300×250 — In-Content</div>
+      </div>
+
+      <div id="modal-cast-wrap">
+        <div class="cast-title">Cast</div>
+        <div class="cast-scroll" id="cast-scroll"></div>
+      </div>
+      <a id="tmdb-link" class="tmdb-ref" href="#" target="_blank" rel="noopener">🎬 View full details on TMDB →</a>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+//  NETMET MOVIES — CORE ENGINE
+//  Add your TMDB API key below (free at developer.themoviedb.org)
+// ═══════════════════════════════════════════
+const TMDB_KEY = 'YOUR_TMDB_API_KEY_HERE';
+const BASE = 'https://api.themoviedb.org/3';
+const IMG = 'https://image.tmdb.org/t/p/';
+
+// State
+let state = {
+  tab: 'movies',
+  page: 1,
+  genre: '',
+  heroItems: [],
+  heroIdx: 0,
+  heroTimer: null,
+  searchTimer: null,
+  searching: false,
+};
+
+// ── Helpers ──
+const $id = id => document.getElementById(id);
+const imgUrl = (p, s='w500') => p ? `${IMG}${s}${p}` : `https://placehold.co/300x450/141414/555?text=No+Image`;
+const getTitle = i => i.title || i.name || '?';
+const getYear = i => {
+  const d = i.release_date || i.first_air_date;
+  return d ? new Date(d).getFullYear() : '—';
+};
+const getType = i => i.media_type || (i.first_air_date ? 'tv' : 'movie');
+
+async function tmdb(ep, p = {}) {
+  if (TMDB_KEY === 'YOUR_TMDB_API_KEY_HERE') return null;
+  p.api_key = TMDB_KEY; p.language = 'en-US';
+  try {
+    const r = await fetch(`${BASE}${ep}?${new URLSearchParams(p)}`);
+    if (!r.ok) throw r.status;
+    return r.json();
+  } catch { toast('API error — check your key'); return null; }
+}
+
+function toast(msg) {
+  const t = $id('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── Skeletons ──
+function skels(el, n, row) {
+  el.innerHTML = Array(n).fill(0).map((_,i)=>
+    `<div class="${row?'movie-card ':' '}skel skel-card" style="animation-delay:${i*0.04}s;${row?`flex:0 0 var(--card-w);`:''}"></div>`
+  ).join('');
+}
+
+// ── Render cards ──
+function renderCards(el, items, row=false, topTen=false) {
+  el.innerHTML = '';
+  if (!items?.length) {
+    el.innerHTML = '<div style="color:var(--text-muted);font-size:0.85rem;padding:2rem 0">No results found.</div>';
+    return;
+  }
+  items.forEach((item, i) => {
+    const t = getTitle(item), y = getYear(item), sc = item.vote_average?.toFixed(1)||'—';
+    const d = document.createElement('div');
+    d.className = 'movie-card';
+    d.style.animationDelay = `${i*0.035}s`;
+    if (row) d.style.cssText += 'flex:0 0 var(--card-w);';
+    d.innerHTML = `
+      ${topTen && i < 10 ? `<div class="top-badge">#${i+1}</div>` : ''}
+      <img class="card-img" src="${imgUrl(item.poster_path)}" alt="${t}" loading="lazy">
+      <div class="card-hover">
+        <div class="card-info-title">${t}</div>
+        <div class="card-info-row">
+          <span class="card-year">${y}</span>
+          <span class="card-score">★ ${sc}</span>
+        </div>
+      </div>
+      <div class="card-label">
+        <div class="card-label-title">${t}</div>
+        <div class="card-label-meta">
+          <span>${y}</span><span style="color:#f5c518">★ ${sc}</span>
+        </div>
+      </div>`;
+    d.addEventListener('click', () => openModal(item.id, getType(item)));
+    el.appendChild(d);
+  });
+}
+
+// ── HERO ──
+function buildDots(n) {
+  const wrap = $id('hero-dots'); wrap.innerHTML = '';
+  for (let i=0; i<Math.min(n,5); i++) {
+    const d = document.createElement('div');
+    d.className = 'hero-dot' + (i===0?' active':'');
+    d.onclick = () => { state.heroIdx = i; setHero(); };
+    wrap.appendChild(d);
+  }
+}
+
+function setHero() {
+  const m = state.heroItems[state.heroIdx];
+  if (!m) return;
+  $id('hero-bg').style.backgroundImage = `url(${imgUrl(m.backdrop_path,'original')})`;
+  $id('hero-title').textContent = getTitle(m);
+  $id('hero-desc').textContent = m.overview || '';
+  $id('hero-meta').innerHTML = `
+    <span class="hero-rating">★ ${m.vote_average?.toFixed(1)||'—'}</span>
+    <span class="hero-match">${Math.round((m.vote_average||0)*10)}% Match</span>
+    <span>${getYear(m)}</span>
+    <span>${(m.original_language||'').toUpperCase()}</span>
+  `;
+  $id('hero-more').onclick = () => openModal(m.id, getType(m));
+  document.querySelectorAll('.hero-dot').forEach((d,i) => d.classList.toggle('active', i===state.heroIdx));
+}
+
+function nextHero() {
+  state.heroIdx = (state.heroIdx+1) % Math.min(state.heroItems.length, 5);
+  setHero();
+}
+
+// ── LOAD DATA ──
+async function loadTrending() {
+  const type = state.tab === 'movies' ? 'movie' : 'tv';
+  skels($id('trending-row'), 8, true);
+  const data = await tmdb(`/trending/${type}/week`);
+  if (!data) { demoMode(); return; }
+  state.heroItems = data.results || [];
+  state.heroIdx = 0;
+  setHero();
+  buildDots(state.heroItems.length);
+  if (state.heroTimer) clearInterval(state.heroTimer);
+  state.heroTimer = setInterval(() => { state.heroIdx = (state.heroIdx+1)%Math.min(state.heroItems.length,5); setHero(); }, 7000);
+  renderCards($id('trending-row'), data.results, true, true);
+}
+
+async function loadDiscover(page=1) {
+  state.page = page;
+  const type = state.tab === 'movies' ? 'movie' : 'tv';
+  skels($id('discover-grid'), 20);
+  $id('pager').innerHTML = '';
+  const p = { page, sort_by:'popularity.desc', include_adult:false };
+  if (state.genre) p.with_genres = state.genre;
+  const data = await tmdb(`/discover/${type}`, p);
+  if (!data) return;
+  renderCards($id('discover-grid'), data.results);
+  buildPager(data.page, Math.min(data.total_pages, 500));
+}
+
+function buildPager(cur, total) {
+  const pg = $id('pager'); pg.innerHTML = '';
+  const pages = [];
+  if (cur>1) pages.push(1);
+  if (cur>3) pages.push('…');
+  for (let i=Math.max(1,cur-1); i<=Math.min(total,cur+1); i++) pages.push(i);
+  if (cur<total-2) pages.push('…');
+  if (cur<total) pages.push(total);
+  pages.forEach(p => {
+    const b = document.createElement('button');
+    b.className = 'pager-btn' + (p===cur?' active':'');
+    b.textContent = p; b.disabled = p==='…';
+    if (typeof p==='number') b.onclick = () => { loadDiscover(p); document.getElementById('discover-anchor').scrollIntoView({behavior:'smooth'}); };
+    pg.appendChild(b);
+  });
+}
+
+// ── TABS ──
+function switchTab(tab, el) {
+  state.tab = tab; state.genre = '';
+  document.querySelectorAll('.genre-pill').forEach(g=>g.classList.remove('active'));
+  document.querySelector('.genre-pill[data-genre=""]').classList.add('active');
+  $id('tab-movies').classList.toggle('active', tab==='movies');
+  $id('tab-tv').classList.toggle('active', tab==='tv');
+  $id('discover-title').textContent = tab==='movies' ? 'Popular Movies' : 'Popular TV Shows';
+  if (el) {
+    document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+    el.classList.add('active');
+  }
+  loadTrending(); loadDiscover(1);
+}
+
+// ── GENRE ──
+function setGenre(g) {
+  state.genre = g;
+  document.querySelectorAll('.genre-pill').forEach(c=>{
+    c.classList.toggle('active', c.dataset.genre===g);
+  });
+  loadDiscover(1);
+  document.getElementById('discover-anchor').scrollIntoView({behavior:'smooth'});
+}
+
+document.querySelectorAll('.genre-pill').forEach(chip => {
+  chip.addEventListener('click', () => setGenre(chip.dataset.genre));
+});
+
+// ── SEARCH ──
+$id('search-input').addEventListener('input', e => {
+  clearTimeout(state.searchTimer);
+  const q = e.target.value.trim();
+  if (!q) {
+    $id('search-section').classList.remove('show');
+    $id('browse-section').style.opacity = '1';
+    return;
+  }
+  state.searchTimer = setTimeout(() => doSearch(q), 380);
+});
+
+async function doSearch(q) {
+  $id('browse-section').style.opacity = '0.15';
+  $id('search-section').classList.add('show');
+  skels($id('search-grid'), 12);
+  const data = await tmdb('/search/multi', {query:q, include_adult:false});
+  if (!data) return;
+  const results = (data.results||[]).filter(r=>r.media_type==='movie'||r.media_type==='tv');
+  $id('search-count').textContent = `${results.length} results`;
+  renderCards($id('search-grid'), results);
+}
+
+// ── MODAL ──
+async function openModal(id, type) {
+  $id('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  $id('modal-title').textContent = 'Loading…';
+  $id('modal-meta').innerHTML = '';
+  $id('modal-genres').innerHTML = '';
+  $id('modal-overview').textContent = '';
+  $id('cast-scroll').innerHTML = '';
+  $id('modal-back').src = '';
+
+  const ep = type==='tv' ? `/tv/${id}` : `/movie/${id}`;
+  const data = await tmdb(ep, {append_to_response:'credits'});
+  if (!data) return;
+
+  const title = getTitle(data);
+  const yr = getYear(data);
+  const sc = data.vote_average?.toFixed(1)||'—';
+  const rt = data.runtime ? `${data.runtime}m` : (data.episode_run_time?.[0]?`${data.episode_run_time[0]}m/ep`:'');
+
+  $id('modal-back').src = imgUrl(data.backdrop_path||data.poster_path, 'w1280');
+  $id('modal-title').textContent = title;
+  $id('modal-meta').innerHTML = `
+    <span class="m-rating">★ ${sc}</span>
+    <span class="m-match">${Math.round((data.vote_average||0)*10)}% Match</span>
+    ${yr ? `<span class="m-pill">${yr}</span>` : ''}
+    ${rt ? `<span class="m-pill">${rt}</span>` : ''}
+    ${data.status ? `<span class="m-pill">${data.status}</span>` : ''}
+    <span class="m-pill">${(data.original_language||'').toUpperCase()}</span>
+  `;
+  $id('modal-genres').innerHTML = (data.genres||[]).map(g=>`<span class="m-genre">${g.name}</span>`).join('');
+  $id('modal-overview').textContent = data.overview||'No description available.';
+
+  const cast = data.credits?.cast?.slice(0,14)||[];
+  $id('cast-scroll').innerHTML = cast.map(c=>`
+    <div class="cast-item">
+      <img class="cast-pic" src="${imgUrl(c.profile_path,'w185')}" alt="${c.name}" loading="lazy">
+      <div class="cast-name">${c.name}</div>
+    </div>`).join('');
+  $id('modal-cast-wrap').style.display = cast.length ? 'block' : 'none';
+
+  const base = type==='tv' ? 'https://www.themoviedb.org/tv/' : 'https://www.themoviedb.org/movie/';
+  $id('tmdb-link').href = `${base}${id}`;
+}
+
+$id('modal-close').onclick = () => { $id('overlay').classList.remove('open'); document.body.style.overflow=''; };
+$id('overlay').onclick = e => { if (e.target===$id('overlay')) { $id('overlay').classList.remove('open'); document.body.style.overflow=''; } };
+document.addEventListener('keydown', e => { if (e.key==='Escape') { $id('overlay').classList.remove('open'); document.body.style.overflow=''; } });
+
+// ── NAVBAR SCROLL ──
+window.addEventListener('scroll', () => {
+  $id('navbar').classList.toggle('scrolled', window.scrollY > 30);
+});
+
+function scrollToDiscover() {
+  document.getElementById('discover-anchor').scrollIntoView({behavior:'smooth'});
+}
+
+// ── DEMO MODE (no API key) ──
+function demoMode() {
+  const fake = Array(10).fill(0).map((_,i)=>({
+    id:i, title:['Add TMDB API Key','Get Key Free at TMDB','Browse 1M+ Titles','Discover Trending','Filter by Genre','Search Instantly','HD Posters','Cast & Crew','Ratings & Reviews','Mobile Friendly'][i],
+    poster_path:null, vote_average:8.5+i*0.05, release_date:'2024-01-01', overview:'Get your free TMDB API key at developer.themoviedb.org and replace YOUR_TMDB_API_KEY_HERE in the script tag.'
+  }));
+  state.heroItems = fake;
+  $id('hero-title').textContent = 'Welcome to NETMET Movies';
+  $id('hero-desc').textContent = 'Add your free TMDB API key to start discovering thousands of movies and TV shows. Get one instantly at developer.themoviedb.org.';
+  $id('hero-meta').innerHTML = '<span style="color:#f5c518">⚠ API Key Required</span>';
+  $id('hero-bg').style.background = 'linear-gradient(135deg,#0a0a0a,#1a0505)';
+  renderCards($id('trending-row'), fake, true);
+  renderCards($id('discover-grid'), [...fake,...fake]);
+  toast('⚠ Add your TMDB API key to activate');
+}
+
+// ── INIT ──
+(function init() {
+  if (TMDB_KEY === 'YOUR_TMDB_API_KEY_HERE') { demoMode(); return; }
+  loadTrending();
+  loadDiscover(1);
+})();
+</script>
+</body>
+</html>
