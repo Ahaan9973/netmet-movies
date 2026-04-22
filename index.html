@@ -906,7 +906,7 @@ const getYear = i => {
 const getType = i => i.media_type || (i.first_air_date ? 'tv' : 'movie');
 
 async function tmdb(ep, p = {}) {
-  if (TMDB_KEY === '60051cd973cd332a2956d0b45dcbe058') return null;
+  if (TMDB_KEY === 'YOUR_TMDB_API_KEY_HERE') return null;
   p.api_key = TMDB_KEY; p.language = 'en-US';
   try {
     const r = await fetch(`${BASE}${ep}?${new URLSearchParams(p)}`);
@@ -1166,7 +1166,7 @@ function demoMode() {
 
 // ── INIT ──
 (function init() {
-  if (TMDB_KEY === '60051cd973cd332a2956d0b45dcbe058') { demoMode(); return; }
+  if (TMDB_KEY === 'YOUR_TMDB_API_KEY_HERE') { demoMode(); return; }
   loadTrending();
   loadDiscover(1);
 })();
