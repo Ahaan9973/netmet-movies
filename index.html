@@ -882,7 +882,7 @@ footer {
 //  NETMET MOVIES — CORE ENGINE
 //  Add your TMDB API key below (free at developer.themoviedb.org)
 // ═══════════════════════════════════════════
-const TMDB_KEY = '60051cd973cd332a2956d0b45dcbe058';
+const TMDB_KEY = '45eece2467fa8e82d718ede64fc6ff39';
 const BASE = 'https://api.themoviedb.org/3';
 const IMG = 'https://image.tmdb.org/t/p/';
 
@@ -1154,7 +1154,7 @@ function scrollToDiscover() {
 function demoMode() {
   const fake = Array(10).fill(0).map((_,i)=>({
     id:i, title:['Add TMDB API Key','Get Key Free at TMDB','Browse 1M+ Titles','Discover Trending','Filter by Genre','Search Instantly','HD Posters','Cast & Crew','Ratings & Reviews','Mobile Friendly'][i],
-    poster_path:null, vote_average:8.5+i*0.05, release_date:'2024-01-01', overview:'Get your free TMDB API key at developer.themoviedb.org and replace 60051cd973cd332a2956d0b45dcbe058 in the script tag.'
+    poster_path:null, vote_average:8.5+i*0.05, release_date:'2024-01-01', overview:'Get your free TMDB API key at developer.themoviedb.org and replace 45eece2467fa8e82d718ede64fc6ff39 in the script tag.'
   }));
   state.heroItems = fake;
   $id('hero-title').textContent = 'Welcome to NETMET Movies';
